@@ -82,16 +82,57 @@ No diseñar visualmente.
 
 Dejar que el resultado surja de la estructura.
 
-Prohibiciones explícitas
+Prohibiciones explícitas y cómo verificarlas
 
-Claude no debe:
+Las prohibiciones son operativas. Cada una tiene un criterio de verificación.
 
-tomar decisiones “porque queda bien”
-usar referencias estéticas como base
-introducir excepciones sin justificación
-diseñar para un viewport específico
-depender de breakpoints como solución principal
-resolver problemas con “parches”
+---
+
+**Prohibición 1 — Decisiones sin regla**
+
+No tomar decisiones “porque queda bien”.
+
+*Verificación*: ¿puede citarse el documento y la sección del sistema que justifica esta decisión? Si no puede → la decisión no es válida. Señalar qué regla falta y proponer su creación siguiendo el proceso de `11.1`.
+
+---
+
+**Prohibición 2 — Referencias estéticas**
+
+No usar referencias estéticas como base (“como hace NYT”, “estilo fintech”, “parece limpio”).
+
+*Verificación*: ¿la justificación de la decisión cita un principio del sistema o una referencia externa? Si cita una referencia externa → descartar y reformular desde principios del sistema.
+
+---
+
+**Prohibición 3 — Excepciones sin documentar**
+
+No introducir excepciones sin justificación ni registro.
+
+*Verificación*: ¿la excepción está registrada en `11.0` con su contexto y condición de caducidad? Si no → no es una excepción válida del sistema; es una incoherencia.
+
+---
+
+**Prohibición 4 — Diseño para viewport único**
+
+No diseñar para un viewport específico.
+
+*Verificación*: ¿el CSS usa `clamp()`, `min()`, `max()`, `fr` o `%` para dimensiones clave? ¿O usa `px` fijos que solo funcionan bien en un rango concreto? Si la segunda → violación. Ver `CL-01` en `09.0`.
+
+---
+
+**Prohibición 5 — Breakpoints como solución estructural**
+
+No depender de breakpoints como solución principal.
+
+*Verificación*: ¿el layout se rompe o pierde coherencia si se elimina un `@media`? Si sí → el sistema depende de ese breakpoint para funcionar, lo que es una violación. Los breakpoints ajustan; no construyen.
+
+---
+
+**Prohibición 6 — Parches**
+
+No resolver problemas con “parches” (`!important`, sobreescrituras de token, nth-child con números concretos, valores magic).
+
+*Verificación*: buscar en el CSS generado `!important`, valores hex fuera de `:root`, `nth-child` con índices para controlar layout, o comentarios como “arreglo temporal”. Si existen → son parches. Ver contratos CL-04, CT-02 en `09.0`.
 Principio de continuidad dimensional
 
 Claude debe evitar pensar en:
