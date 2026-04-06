@@ -12,7 +12,36 @@ Before doing anything else, read:
 
 ## Mode System
 
-When the user's message begins with a `[SYX: MODE]:` prefix, activate the corresponding mode **before responding**. Read the mode file and let it override your default behavior for the entire response.
+When the user's message begins with a prefix, activate the corresponding mode **before responding**. Read the mode file and let it override your default behavior for the entire response.
+
+### Two-layer architecture
+
+The system has two kinds of prefixes:
+
+**`[ATLAS]:`** — Mental model layer. Activates the Atlas editorial framework (`_agents/atlas-rules/`). Atlas decides *what to build and why*: hierarchy, density, editorial zones, proportions, context-first constraints. Atlas always wraps a SYX mode that executes the technical task.
+
+**`[SYX: MODE]:`** — Execution layer. Technical implementation modes. Each mode is agnostic — it doesn't know about Atlas unless Atlas context is injected via `[ATLAS]:`.
+
+**How they work together:**
+
+```
+[ATLAS]: Generate an economics news homepage using [SYX: UX]
+   │
+   ├── Atlas activates first:
+   │     Reads _agents/atlas-rules/ (hierarchy, density, editorial zones)
+   │     Defines: N1/N2/N3 levels, layout proportions, context-first rules
+   │     Enriches the request with editorial decisions
+   │
+   └── [SYX: UX] executes with Atlas context already resolved:
+         Receives: level, zone, density, constraints
+         Produces: HTML structure + states + accessibility
+```
+
+Atlas decides. SYX executes. Never the other way around.
+
+If the message has only `[SYX: MODE]:` without `[ATLAS]:`, the mode runs standalone — no editorial context is applied.
+
+---
 
 ### Resource Tiers
 
@@ -20,6 +49,7 @@ Modes are calibrated by complexity and AI resource consumption. Choose the right
 
 | Tier | Mode | Cost | Files loaded | Output artifacts | Typical turns |
 |---|---|---|---|---|---|
+| 0 | `[ATLAS]:` | + atlas-rules overhead | atlas-rules/ + SYX mode files | Depends on SYX mode used | + 1 turn |
 | 1 | `[SYX: SKETCH]:` | ⚡ Minimal | 0 | 1 HTML file (inline styles) | 1 |
 | 2 | `[SYX: UX]:` | 🔵 Light | 1 (`component-registry.json`) | HTML structure + states | 1–2 |
 | 3 | `[SYX: CREATIVE]:` | 🟡 Medium | 0–1 | HTML + CSS (self-contained) | 1–2 |
@@ -29,12 +59,13 @@ Modes are calibrated by complexity and AI resource consumption. Choose the right
 | 7 | `[SYX: AUDIT]:` | 🔴 High | N (component tree being audited) | Violation report | 2–4 |
 | 8 | `[SYX: MIGRATE]:` | 🔴 Very High | N+ (all files referencing the migrated variable) | Migration plan + diffs | 4–6 |
 
-> **Tip:** Start with SKETCH or UX to validate the concept. Escalate to TOKEN → UI → AUDIT only when the idea is confirmed.
+> **Tip:** Use `[ATLAS]:` when editorial context matters (portadas, secciones, layouts de marca). Use `[SYX: MODE]:` alone for purely technical tasks (token creation, SCSS implementation of a spec already decided).
 
 ### Mode Reference
 
 | Prefix | Mode file | When to use |
 |---|---|---|
+| `[ATLAS]:` | `_agents/atlas-rules/` + `_agents/GOVERNANCE.md` | Any editorial task where hierarchy, density, zones or context-first decisions are needed |
 | `[SYX: SKETCH]:` | `_agents/modes/sketch.md` | Quick POCs, wireframes, flow diagrams, layout experiments — no token/registry checks |
 | `[SYX: UX]:` | `_agents/modes/ux.md` | Component selection, HTML structure, accessibility, interaction design |
 | `[SYX: CREATIVE]:` | `_agents/modes/creative.md` | Experimental builds, awwwards-style pages, advanced CSS techniques, creative exploration |

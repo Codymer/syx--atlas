@@ -11,6 +11,37 @@ Cuando se invocan de forma conjunta, este documento es la fuente de verdad para 
 
 ---
 
+## Modelo jerárquico
+
+```
+[ATLAS]:  modelo mental — decide qué construir y por qué
+             jerarquía editorial, densidad, zonas, proporciones, context-first
+
+[SYX: MODE]:  herramienta técnica — ejecuta lo que Atlas ha decidido
+             SCSS, tokens, HTML, auditoría, migración
+```
+
+Atlas no es un igual de los modes. Es la capa que los envuelve y les da contexto.
+Cuando `[ATLAS]:` está activo, el mode SYX recibe las decisiones editoriales ya tomadas — no las toma él.
+
+**Sintaxis de invocación combinada:**
+
+```
+[ATLAS]: descripción de la tarea utilizando [SYX: MODE]
+```
+
+Ejemplos:
+```
+[ATLAS]: Genera una portada de noticias económicas utilizando [SYX: UX]
+[ATLAS]: Implementa el componente org-hero-principal utilizando [SYX: UI]
+[ATLAS]: Audita portada-economia.html utilizando [SYX: AUDIT]
+[ATLAS]: Define los tokens para el sistema editorial usando [SYX: TOKEN]
+```
+
+Sin `[ATLAS]:`, el mode SYX corre en modo standalone — sin contexto editorial, sin jerarquía, sin context-first de Atlas. Útil para tareas puramente técnicas donde las decisiones editoriales ya están tomadas.
+
+---
+
 ## 1. Dominios de autoridad
 
 Cada sistema es soberano en su dominio. Ninguno sobreescribe al otro dentro de su área.
@@ -31,35 +62,31 @@ Cada sistema es soberano en su dominio. Ninguno sobreescribe al otro dentro de s
 
 ---
 
-## 2. Protocolo de invocación combinada
+## 2. Orden de operación cuando [ATLAS]: está activo
 
-Cuando una tarea requiere ambos sistemas, se activan con esta sintaxis:
-
-```
-[ATLAS + SYX: MODE]: descripción de la tarea
-```
-
-**Ejemplos:**
+Cuando el prefijo `[ATLAS]:` está presente, el orden de razonamiento es siempre:
 
 ```
-[ATLAS + SYX: UI]: Implement org-hero-principal following atlas hierarchy N1
-[ATLAS + SYX: UX]: Design the secondary news zone for density N3
-[ATLAS + SYX: AUDIT]: Full audit of portada-economia.html
-[ATLAS + SYX: TOKEN]: Define tokens for a 4-level editorial hierarchy
+1. Atlas lee atlas-rules/ y determina:
+   ¿qué nivel editorial es este contenido? (N1/N2/N3/N4)
+   ¿qué reglas de proporción, densidad y jerarquía aplican? (04.x, 06.x)
+   ¿qué restricciones context-first son relevantes? (05.x, 12.2)
+
+2. Atlas formula el contexto editorial como input para el mode SYX:
+   nivel, zona, densidad, proporciones, restricciones mobile
+
+3. El mode SYX especificado ejecuta con ese contexto ya resuelto:
+   UX → estructura HTML + estados
+   TOKEN → tokens necesarios para las decisiones de Atlas
+   UI → implementación SCSS
+   AUDIT → auditoría R01–R08 + contratos Atlas (ver sección 5)
+   SKETCH → boceto con handoff editorial en comentario
+   THEME → variante visual respetando jerarquía editorial
+   MIGRATE → migración con equivalencias de naming Atlas (12.1)
 ```
 
-### Orden de operación en modo combinado
-
-Cuando ambos sistemas están activos, el orden de razonamiento es:
-
-```
-1. Atlas: ¿qué nivel editorial es este contenido? (N1/N2/N3/N4)
-2. Atlas: ¿qué reglas de proporción, densidad y jerarquía aplican? (04.x, 06.x)
-3. Atlas → Modes: traducir a estructura HTML semántica (10.0 + UX mode)
-4. Modes: ¿qué tokens necesita? verificar contra tokens.json y 08.0
-5. Modes: implementar SCSS con R01–R04 + @layer (UI mode)
-6. Modes + Atlas: AUDIT combinado (ver sección 5)
-```
+Atlas decide en los pasos 1 y 2. El mode SYX ejecuta en el paso 3.
+El mode nunca retrocede a tomar decisiones editoriales.
 
 ---
 
@@ -120,7 +147,7 @@ En POCs Atlas que eventualmente se promuevan a SCSS, el stack se adapta al de Mo
 
 ## 5. AUDIT combinado
 
-Cuando se invoca `[ATLAS + SYX: AUDIT]:`, el modo AUDIT ejecuta dos capas de verificación:
+Cuando se invoca `[ATLAS]: ... utilizando [SYX: AUDIT]`, el modo AUDIT ejecuta dos capas de verificación:
 
 ### Capa 1 — Contratos Modes (R01–R08)
 Igual que el comportamiento estándar de AUDIT mode. Sin cambios.
@@ -271,16 +298,17 @@ Para evitar que esta gobernanza introduzca reglas implícitas que anulen las exi
 
 ## 9. Archivos de referencia por escenario
 
-| Escenario | Archivos a consultar |
-|---|---|
-| Diseñar una portada editorial (UX) | `06.1`, `06.2`, `10.0`, `ux.md` |
-| Implementar un componente de portada (SCSS) | `token.md`, `ui.md`, `08.0` → sección 3 de este doc para bridge de tokens |
-| Auditar una portada compilada | `audit.md` + sección 5 de este doc |
-| Crear tokens para sistema editorial | `token.md`, `10.0`, `08.0`, sección 3 de este doc |
-| Migrar variables legacy en página editorial | `migrate.md`, sección 6 de este doc |
-| Hacer sketch de idea editorial | `sketch.md`, sección 6 de este doc |
-| Añadir un nuevo modo | `README.md` (modes), actualizar sección 6 de este doc |
-| Añadir una nueva regla Atlas | `11.1`, verificar si afecta algún mode en sección 6 |
+| Escenario | Invocación | Archivos a consultar |
+|---|---|---|
+| Diseñar una portada editorial | `[ATLAS]: ... [SYX: UX]` | `06.1`, `06.2`, `10.0`, `ux.md` |
+| Implementar un componente de portada | `[ATLAS]: ... [SYX: UI]` | `token.md`, `ui.md`, `08.0` → sección 3 de este doc |
+| Auditar una portada compilada | `[ATLAS]: ... [SYX: AUDIT]` | `audit.md` + sección 5 de este doc |
+| Crear tokens para sistema editorial | `[ATLAS]: ... [SYX: TOKEN]` | `token.md`, `10.0`, `08.0`, sección 3 de este doc |
+| Migrar variables legacy en página editorial | `[ATLAS]: ... [SYX: MIGRATE]` | `migrate.md`, sección 6 de este doc |
+| Hacer sketch de idea editorial | `[ATLAS]: ... [SYX: SKETCH]` | `sketch.md`, sección 6 de este doc |
+| Tarea técnica sin contexto editorial | `[SYX: MODE]:` solo | Solo los archivos del mode |
+| Añadir un nuevo modo | — | `README.md` (modes), actualizar sección 6 de este doc |
+| Añadir una nueva regla Atlas | — | `11.1`, verificar si afecta algún mode en sección 6 |
 
 ---
 

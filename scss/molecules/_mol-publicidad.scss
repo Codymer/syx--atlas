@@ -1,0 +1,73 @@
+// CORE
+// ===============================================
+@use "../abstracts/index" as *;
+// ===============================================
+
+// MOL: mol-publicidad
+// ===============================================
+// Bloque publicitario estándar en flujo del grid (no fixed, no absolute).
+// Etiqueta "Publicidad" visible: cumple CP-02 (transparencia editorial).
+// El enlace lleva rel="sponsored noopener" y target="_blank".
+//
+// Tamaños soportados (vía modificadores):
+//   --300x250   (default) — MR/MPU estándar
+//   --728x90    — Leaderboard
+//   --320x50    — Mobile banner
+//
+// Usage:
+//   <aside class="mol-publicidad mol-publicidad--300x250" aria-label="Publicidad">
+//     <span class="mol-publicidad__label">Publicidad</span>
+//     <a class="mol-publicidad__link" href="…" rel="sponsored noopener" target="_blank"
+//        aria-label="Publicidad: [nombre del anunciante]">
+//       <img src="…" alt="" width="300" height="250" loading="lazy">
+//     </a>
+//   </aside>
+// ===============================================
+@mixin mol-publicidad($theme: null) {
+  @layer syx.molecules {
+
+  .mol-publicidad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--semantic-space-inset-xs);
+
+    // &__label — etiqueta de transparencia publicitaria
+    &__label {
+      align-self: flex-start;
+      color: var(--semantic-color-text-tertiary);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    // &__link — contenedor del anuncio
+    &__link {
+      display: block;
+      border-radius: var(--semantic-border-radius-md);
+      overflow: hidden;
+      border: 1px solid var(--semantic-color-border-subtle);
+      @include transition(opacity 150ms ease);
+
+      &:hover { opacity: 0.9; }
+
+      &:focus-visible {
+        outline: 2px solid var(--semantic-color-primary);
+        outline-offset: 2px;
+      }
+
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    // Modificadores de tamaño
+    &--300x250 &__link { max-width: 300px; }
+    &--728x90  &__link { max-width: 728px; }
+    &--320x50  &__link { max-width: 320px; }
+  }
+
+  } // end @layer syx.molecules
+}

@@ -42,6 +42,14 @@ Read `contracts/rules.json` for the authoritative definitions. Quick reference:
 
 These are not in `contracts/rules.json` but are part of a thorough audit:
 
+**Progressive enhancement checks:**
+- `@media (max-width: …)` present in component files → violation. Mobile-last approach. Replace with `min-width`.
+- HTML element duplicated to handle two breakpoints (same content, different class or wrapper at different viewpoints) → structural error. Flag for UX mode review.
+- Content reordered with HTML duplication instead of CSS `order` → same structural error.
+- Interactive component (dropdown, accordion, tab) with no documented no-JS state → flag. The HTML structure must be usable without JavaScript.
+- Essential content injected via CSS `::before`/`::after` with `content:` → accessibility violation. Content that conveys meaning must be in the HTML.
+- `clamp()` absent on tokens or styles for N1/N2 headlines in editorial contexts → flag against TOKEN principle (context-neutral tokens).
+
 **Structure checks:**
 - Every component must be wrapped in `@mixin {prefix}-{name}($theme: null) { @layer syx.{layer} { … } }`
 - `@layer` declaration must wrap ALL rules — nothing can be outside it inside the mixin

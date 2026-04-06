@@ -1,0 +1,124 @@
+// CORE
+// ===============================================
+@use "../abstracts/index" as *;
+// ===============================================
+
+// MOL: mol-card-noticia
+// ===============================================
+// Card editorial N2 con imagen (aspecto 3:2), categoría, titular y metadatos.
+// El enlace cubre toda la card mediante ::after expandido.
+// Sin imagen: el wrapper mantiene el aspect-ratio con bg-tertiary como placeholder.
+//
+// Usage:
+//   <article class="mol-card-noticia">
+//     <div class="mol-card-noticia__imagen">
+//       <img src="…" alt="…" loading="lazy" width="600" height="400">
+//     </div>
+//     <div class="mol-card-noticia__content">
+//       <div class="mol-card-noticia__meta-top">
+//         <span class="atom-pill atom-pill--neutral">Categoría</span>
+//       </div>
+//       <h3 class="atom-title atom-title--h2">
+//         <a href="…">Titular de la noticia</a>
+//       </h3>
+//       <div class="mol-card-noticia__meta-bottom">…</div>
+//     </div>
+//   </article>
+// ===============================================
+@mixin mol-card-noticia($theme: null) {
+  @layer syx.molecules {
+
+  .mol-card-noticia {
+    position: relative; // contexto para el enlace expandido
+    display: flex;
+    flex-direction: column;
+    background-color: var(--semantic-color-bg-secondary);
+    border: 1px solid var(--semantic-color-border-subtle);
+    border-radius: var(--semantic-border-radius-lg);
+    overflow: hidden;
+    @include transition(box-shadow 200ms ease);
+
+    &:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    &:focus-within {
+      outline: 2px solid var(--semantic-color-primary);
+      outline-offset: 2px;
+    }
+
+    // &__imagen — wrapper con aspect-ratio fijo
+    &__imagen {
+      aspect-ratio: 3 / 2;
+      overflow: hidden;
+      background-color: var(--semantic-color-bg-tertiary);
+      flex-shrink: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        @include transition(transform 300ms ease);
+      }
+    }
+
+    &:hover &__imagen img {
+      transform: scale(1.03);
+    }
+
+    // &__content — zona de texto
+    &__content {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding: var(--semantic-space-inset-md);
+      gap: var(--semantic-space-stack-sm);
+    }
+
+    // &__meta-top — categoría / pill
+    &__meta-top {
+      display: flex;
+      align-items: center;
+      gap: var(--semantic-space-inset-sm);
+    }
+
+    // Enlace del titular — cubre toda la card con ::after
+    &__content h3 {
+      flex: 1;
+
+      a {
+        color: var(--semantic-color-text-primary);
+        text-decoration: none;
+        display: block;
+
+        // Enlace expandido: cubre toda la card
+        &::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+        }
+
+        &:hover {
+          color: var(--semantic-color-primary);
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--semantic-color-primary);
+          outline-offset: 2px;
+        }
+      }
+    }
+
+    // &__meta-bottom — autor, tiempo, acciones
+    &__meta-bottom {
+      display: flex;
+      align-items: center;
+      gap: var(--semantic-space-inset-md);
+      margin-top: auto;
+      padding-top: var(--semantic-space-stack-sm);
+      border-top: 1px solid var(--semantic-color-border-subtle);
+    }
+  }
+
+  } // end @layer syx.molecules
+}

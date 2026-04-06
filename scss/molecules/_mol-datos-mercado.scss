@@ -1,0 +1,115 @@
+// CORE
+// ===============================================
+@use "../abstracts/index" as *;
+// ===============================================
+
+// MOL: mol-datos-mercado
+// ===============================================
+// Panel de cotizaciones financieras en sidebar.
+// Cada ítem muestra: nombre · valor · badge de cambio (alza/baja/neutro).
+// Los colores de estado (success/error) son invariantes de marca (semáforo cognitivo).
+//
+// Usage:
+//   <section class="mol-datos-mercado" aria-label="Datos de mercado">
+//     <header class="mol-datos-mercado__heading">
+//       <h2 class="atom-title atom-title--sm">Mercados</h2>
+//     </header>
+//     <ul class="mol-datos-mercado__list">
+//       <li class="mol-datos-mercado__item">
+//         <span class="mol-datos-mercado__nombre">IBEX 35</span>
+//         <div class="mol-datos-mercado__values">
+//           <span class="atom-txt atom-txt--sm">10.234,50</span>
+//           <span class="mol-datos-mercado__cambio mol-datos-mercado__cambio--alza">▲ +0,42%</span>
+//         </div>
+//       </li>
+//     </ul>
+//     <div class="mol-datos-mercado__cta">
+//       <a class="atom-btn atom-btn--ghost-dark atom-btn--sm" href="…">Ver todos</a>
+//     </div>
+//   </section>
+// ===============================================
+@mixin mol-datos-mercado($theme: null) {
+  @layer syx.molecules {
+
+  .mol-datos-mercado {
+    background-color: var(--semantic-color-bg-secondary);
+    border: 1px solid var(--semantic-color-border-subtle);
+    border-radius: var(--semantic-border-radius-lg);
+    padding: var(--semantic-space-inset-md);
+
+    // &__heading — título del panel
+    &__heading {
+      margin-bottom: var(--semantic-space-stack-md);
+      padding-bottom: var(--semantic-space-stack-sm);
+      border-bottom: 1px solid var(--semantic-color-border-subtle);
+    }
+
+    // &__list — contenedor de ítems
+    &__list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    // &__item — fila individual
+    &__item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: var(--semantic-space-inset-sm);
+      border-bottom: 1px solid var(--semantic-color-border-subtle);
+
+      &:last-child { border-bottom: none; }
+    }
+
+    // &__nombre
+    &__nombre {
+      font-weight: 600;
+    }
+
+    // &__values — zona derecha: valor + badge
+    &__values {
+      display: flex;
+      align-items: center;
+      gap: var(--semantic-space-inset-sm);
+      text-align: right;
+    }
+
+    // &__cambio — badge de variación
+    &__cambio {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-weight: 700;
+      font-size: var(--primitive-type-xs, 0.75rem);
+      padding: 2px 6px;
+      border-radius: 4px;
+
+      // Estado: alza — verde invariante de marca
+      &--alza {
+        color: var(--semantic-color-state-success);
+        background-color: var(--semantic-color-state-success-subtle);
+      }
+
+      // Estado: baja — rojo invariante de marca
+      &--baja {
+        color: var(--semantic-color-state-error);
+        background-color: var(--semantic-color-state-error-subtle);
+      }
+
+      // Estado: sin cambio
+      &--neutro {
+        color: var(--semantic-color-text-tertiary);
+        background-color: var(--semantic-color-bg-tertiary);
+      }
+    }
+
+    // &__cta — enlace a página de mercados
+    &__cta {
+      margin-top: var(--semantic-space-stack-md);
+      width: 100%;
+    }
+  }
+
+  } // end @layer syx.molecules
+}

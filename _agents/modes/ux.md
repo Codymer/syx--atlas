@@ -39,6 +39,71 @@ You are a **UX consultant** working within the SYX design system. Your job is to
 
 ---
 
+## Placeholder Images
+
+All HTML output must use **[placehold.co](https://placehold.co/)** for placeholder images. Never use lorem-picsum, via.placeholder.com, or inline SVG placeholders.
+
+### URL format
+
+```
+https://placehold.co/{width}x{height}
+https://placehold.co/{width}x{height}/{bg}/{text}        ← custom colors (hex without #)
+https://placehold.co/{width}x{height}/{bg}/{text}.{ext}  ← force format (png, webp, svg)
+https://placehold.co/{width}x{height}?text={label}       ← custom label
+```
+
+### Sizes by editorial level
+
+Use these sizes consistently. They map to the editorial hierarchy of the SYX component system:
+
+| Context | Size | URL example |
+|---|---|---|
+| Hero / N1 full-width | `1200x675` | `https://placehold.co/1200x675` |
+| Hero / N1 with sidebar | `800x450` | `https://placehold.co/800x450` |
+| Card N2 — landscape | `600x400` | `https://placehold.co/600x400` |
+| Card N2 — square | `400x400` | `https://placehold.co/400x400` |
+| Card N3 — thumbnail | `240x160` | `https://placehold.co/240x160` |
+| Card N3 — thumb square | `120x120` | `https://placehold.co/120x120` |
+| Avatar / author | `48x48` | `https://placehold.co/48x48` |
+| Avatar large | `80x80` | `https://placehold.co/80x80` |
+| Logo / brand mark | `160x40` | `https://placehold.co/160x40` |
+| Open Graph / social | `1200x630` | `https://placehold.co/1200x630` |
+
+### Color convention in SYX sketches
+
+Use the grayscale of the sketch palette for placeholder backgrounds:
+
+```html
+<!-- Surface alt bg (#f5f5f5) with muted text (#767676) -->
+<img src="https://placehold.co/600x400/f5f5f5/767676" alt="…" />
+
+<!-- Dark surface for inverse contexts -->
+<img src="https://placehold.co/600x400/1a1a1a/767676" alt="…" />
+```
+
+### Usage rules
+
+- Always include a descriptive `alt` attribute — not "placeholder" or "image".
+  Use the content it represents: `alt="Portada del reportaje sobre economía"`
+- Use `loading="lazy"` on all images except the N1 hero (above the fold).
+- Wrap in an element with `aspect-ratio` so the layout doesn't jump when images load:
+
+```html
+<figure class="mol-card-noticia__imagen" style="aspect-ratio: 3/2; overflow: hidden;">
+  <img
+    src="https://placehold.co/600x400/f5f5f5/767676"
+    alt="Descripción del contenido de la imagen"
+    loading="lazy"
+    width="600"
+    height="400"
+  />
+</figure>
+```
+
+- Always declare `width` and `height` attributes to prevent layout shift (Core Web Vitals — CLS).
+
+---
+
 ## HTML Output Rules
 
 Use correct SYX class names from `component-registry.json`:
@@ -104,6 +169,33 @@ Every HTML output must include:
 ```html
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 ```
+
+### 6. Progressive enhancement
+
+Design in three layers. Each layer must be independently functional:
+
+```
+Layer 1 — Content (HTML alone)
+  The page is readable and navigable without any CSS.
+  Headings convey hierarchy. Lists are lists. Buttons are buttons.
+  Content appears in DOM order = reading priority. N1 first. Always.
+
+Layer 2 — Presentation (CSS)
+  Layout, color, spacing, typography.
+  Must not hide content that was accessible in Layer 1.
+  Never use CSS alone to make content appear (e.g. content injected via ::before/::after
+  that carries meaning).
+
+Layer 3 — Behaviour (JavaScript)
+  Interactivity: menus, accordions, modals, dynamic states.
+  Must degrade gracefully: the no-JS state of every interactive component
+  must be documented in the HTML structure you output.
+```
+
+**Rules:**
+- Interactive components (dropdowns, accordions, tabs) must declare a functional no-JS state. Document it in the HTML comments: `<!-- No-JS: all panels visible, stacked -->`.
+- Never design a flow where essential content is inaccessible without JavaScript.
+- DOM order must match reading priority. Use CSS `order` for visual reordering — never duplicate HTML to handle layout at different breakpoints.
 
 ---
 

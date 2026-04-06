@@ -180,6 +180,48 @@ Every token you create must be added to `tokens.json`:
 
 ---
 
+## Context-Neutral Token Principle
+
+Tokens must not encode assumptions about viewport, JavaScript state, or rendering context. A token is a design decision — not a layout decision.
+
+**Rules:**
+
+### No viewport-specific tokens
+A token cannot have a value that only makes sense at a specific breakpoint. Responsive behavior belongs in component SCSS, not in token values.
+
+```scss
+// ✗ Wrong — the token assumes a viewport
+--component-hero-font-size: 3.25rem; // "this is only right on desktop"
+
+// ✓ Correct — the token names the intent; clamp() encodes the range
+--component-hero-font-size: clamp(var(--primitive-type-xl), 4vw, var(--primitive-type-3xl));
+```
+
+**Prefer `clamp()` over breakpoint-switching tokens.** If a value scales continuously with the viewport, express it as a single `clamp()` value. Only use two separate tokens (e.g. `-sm` and `-lg` variants) when the design intent genuinely requires a discrete jump, not a gradual scale.
+
+### No JavaScript-dependent tokens
+Token values must resolve correctly without JavaScript. Do not define tokens whose fallback is broken (e.g. a token that only works when a JS-injected class is present on `<body>`).
+
+```scss
+// ✗ Wrong — fallback is unusable without JS
+--component-menu-height: var(--js-menu-height, 0px); // collapses to 0 without JS
+
+// ✓ Correct — fallback is a real, usable value
+--component-menu-height: var(--js-menu-height, auto);
+```
+
+### Density tokens are additive
+When creating tokens for density variants (`--compact`, `--comfortable`), define them as **multipliers or offsets from the base**, not as standalone values. This keeps themes from having to override every density level independently.
+
+```scss
+// ✓ Correct — compact overrides the base token via calc()
+.atom-btn--compact {
+  --component-btn-padding-y: calc(var(--component-btn-padding-y-base) * 0.75);
+}
+```
+
+---
+
 ## Response Format
 
 ```

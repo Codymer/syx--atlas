@@ -1,0 +1,124 @@
+// SYX — Portada-Economía: Token overrides
+// ================================================
+// PARTIAL — no @use. Pure CSS custom properties.
+//
+// CÓMO FUNCIONA EN LA CASCADA:
+//   Este archivo se @use-a DESPUÉS de abstracts/index en los
+//   entry points de portada-economia. En SCSS, los módulos se
+//   emiten en el orden en que se cargan:
+//
+//     @use './abstracts/index'          → ①  SYX :root (pink, purple…)
+//     @use './portada-economia-tokens'  → ②  Portada :root (neutral, brand…)
+//
+//   Al estar DESPUÉS, los tokens de portada sobreescriben los
+//   semánticos de SYX sin necesidad de inline styles en el HTML.
+//
+// PARA CAMBIAR LA PALETA COMPLETA:
+//   Editar solo --primitive-color-brand-hue (rojo: 27, verde: 142,
+//   naranja: 55, púrpura: 295, azul: 264).
+// ================================================
+
+:root {
+
+  // ── CAPA 1: PRIMITIVOS ───────────────────────────────────────────
+
+  // Tipografía — escala modular ×1.25
+  --primitive-type-xs:   0.75rem;
+  --primitive-type-sm:   0.875rem;
+  --primitive-type-base: 1rem;
+  --primitive-type-md:   1.25rem;
+  --primitive-type-lg:   1.5rem;
+  --primitive-type-xl:   2rem;
+  --primitive-type-2xl:  2.5rem;
+  --primitive-type-3xl:  3.25rem;
+
+  // Espaciado — escala ×4 (base 4px)
+  --primitive-space-1:  0.25rem;
+  --primitive-space-2:  0.5rem;
+  --primitive-space-3:  0.75rem;
+  --primitive-space-4:  1rem;
+  --primitive-space-6:  1.5rem;
+  --primitive-space-8:  2rem;
+  --primitive-space-10: 2.5rem;
+  --primitive-space-12: 3rem;
+  --primitive-space-16: 4rem;
+
+  // Escala neutral — OKLCH acromático (perceptualmente uniforme)
+  --primitive-color-neutral-0:    oklch(1.000 0 0);    // blanco puro
+  --primitive-color-neutral-50:   oklch(0.985 0 0);    // fondo página
+  --primitive-color-neutral-100:  oklch(0.961 0 0);    // fondo tarjetas
+  --primitive-color-neutral-150:  oklch(0.940 0 0);    // fondo terciario
+  --primitive-color-neutral-200:  oklch(0.925 0 0);    // bordes sutiles
+  --primitive-color-neutral-300:  oklch(0.850 0 0);    // bordes default
+  --primitive-color-neutral-400:  oklch(0.707 0 0);    // texto terciario
+  --primitive-color-neutral-500:  oklch(0.600 0 0);    // texto secundario light
+  --primitive-color-neutral-600:  oklch(0.496 0 0);    // texto secundario
+  --primitive-color-neutral-700:  oklch(0.374 0 0);    // texto primario light
+  --primitive-color-neutral-900:  oklch(0.134 0 0);    // texto primario / bg-inverse
+  --primitive-color-neutral-1000: oklch(0.000 0 0);    // negro puro
+
+  // Color de marca — único punto de cambio cromático
+  // Cambiar H (hue) aquí para renovar toda la paleta:
+  //   azul H 264 · rojo H 27 · verde H 142 · naranja H 55 · púrpura H 295
+  --primitive-color-brand-hue:   264;
+  --primitive-color-brand-200:   oklch(0.88 0.06  var(--primitive-color-brand-hue));
+  --primitive-color-brand-400:   oklch(0.65 0.15  var(--primitive-color-brand-hue));
+  --primitive-color-brand-600:   oklch(0.457 0.177 var(--primitive-color-brand-hue));
+  --primitive-color-brand-700:   oklch(0.38 0.16  var(--primitive-color-brand-hue));
+
+  // Estados semánticos — invariantes de marca (semáforo cognitivo)
+  --primitive-color-success-100: oklch(0.95 0.06  142);
+  --primitive-color-success-600: oklch(0.521 0.177 142);
+  --primitive-color-error-100:   oklch(0.95 0.06  27);
+  --primitive-color-error-600:   oklch(0.521 0.177 27);
+
+  // ── CAPA 2: SEMÁNTICOS ───────────────────────────────────────────
+  // Nombres por función. Reemplazamos los SYX semánticos que
+  // referenciaban pink/purple con los neutros de portada.
+
+  // Superficies
+  --semantic-color-bg-primary:          var(--primitive-color-neutral-50);
+  --semantic-color-bg-secondary:        var(--primitive-color-neutral-0);
+  --semantic-color-bg-tertiary:         var(--primitive-color-neutral-150);
+  --semantic-color-bg-inverse:          var(--primitive-color-neutral-900);
+
+  // Texto (WCAG AA sobre superficies correspondientes)
+  --semantic-color-text-primary:        var(--primitive-color-neutral-900);
+  --semantic-color-text-secondary:      var(--primitive-color-neutral-700);
+  --semantic-color-text-tertiary:       var(--primitive-color-neutral-400);
+  --semantic-color-text-inverse:        var(--primitive-color-neutral-0);
+
+  // Acción — color de marca en uso interactivo (regla 60/30/10)
+  --semantic-color-primary:             var(--primitive-color-brand-600);
+  --semantic-color-primary-hover:       var(--primitive-color-brand-700);
+
+  // Bordes
+  --semantic-color-border-subtle:       var(--primitive-color-neutral-200);
+  --semantic-color-border-default:      var(--primitive-color-neutral-300);
+
+  // Estados (invariantes — no cambian con hue)
+  --semantic-color-state-success:       var(--primitive-color-success-600);
+  --semantic-color-state-success-subtle:var(--primitive-color-success-100);
+  --semantic-color-state-error:         var(--primitive-color-error-600);
+  --semantic-color-state-error-subtle:  var(--primitive-color-error-100);
+
+  // ── CAPA 2: SEMÁNTICOS — Espaciado, layout, radios ───────────────
+  --semantic-space-inset-xs:   var(--primitive-space-2);
+  --semantic-space-inset-sm:   var(--primitive-space-3);
+  --semantic-space-inset-md:   var(--primitive-space-4);
+  --semantic-space-inset-lg:   var(--primitive-space-6);
+  --semantic-space-inset-xl:   var(--primitive-space-8);
+  --semantic-space-stack-sm:   var(--primitive-space-3);
+  --semantic-space-stack-md:   var(--primitive-space-4);
+  --semantic-space-stack-lg:   var(--primitive-space-6);
+  --semantic-space-stack-xl:   var(--primitive-space-8);
+  --semantic-space-stack-2xl:  var(--primitive-space-12);
+
+  --semantic-container-max:    1200px;
+  --semantic-container-skin:   1440px;
+  --semantic-grid-gap:         var(--primitive-space-6);
+
+  --semantic-border-radius-sm: 4px;
+  --semantic-border-radius-md: 8px;
+  --semantic-border-radius-lg: 12px;
+}

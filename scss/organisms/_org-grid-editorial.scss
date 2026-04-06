@@ -1,0 +1,99 @@
+// CORE
+// ===============================================
+@use "../abstracts/index" as *;
+// ===============================================
+
+// ORG: org-grid-editorial
+// ===============================================
+// Layout principal de portada: área de contenido + sidebar.
+// Estructura: columna única en mobile → grid 2fr·1fr en laptop+.
+//
+// DOM order = prioridad de contenido:
+//   __content (N2 + N3) → __sidebar (mercados + publicidad)
+// El sidebar aparece visualmente a la derecha en desktop mediante CSS grid.
+// NUNCA duplicar el HTML para reordenar visualmente.
+//
+// Incluye dos sub-layouts editoriales:
+//   org-grid-n2 — 3 cards N2 (1col → 2col → 3col)
+//   org-grid-n3 — lista de noticias N3 sin imagen
+//
+// Usage:
+//   <div class="org-grid-editorial">
+//     <div class="org-grid-editorial__content">
+//       <section class="org-grid-n2">…</section>
+//       <section class="org-grid-n3">…</section>
+//     </div>
+//     <aside class="org-grid-editorial__sidebar">
+//       <section class="mol-datos-mercado">…</section>
+//       <aside class="mol-publicidad mol-publicidad--300x250">…</aside>
+//     </aside>
+//   </div>
+// ===============================================
+@mixin org-grid-editorial($theme: null) {
+  @layer syx.organisms {
+
+  // ─── Layout principal ──────────────────────────
+  .org-grid-editorial {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--semantic-space-stack-xl);
+    padding-block: var(--semantic-space-stack-xl);
+
+    @include breakpoint(laptop) {
+      grid-template-columns: 2fr 1fr;
+      align-items: start;
+    }
+
+    // DOM order preservado; CSS gestiona el visual
+    &__content { order: 1; }
+
+    &__sidebar {
+      order: 2;
+      display: flex;
+      flex-direction: column;
+      gap: var(--semantic-space-stack-lg);
+
+      @include breakpoint(laptop) {
+        position: sticky;
+        // top = altura del header (~72px) + espaciado
+        top: calc(var(--semantic-space-stack-lg) + 72px);
+      }
+    }
+  }
+
+  // ─── N2: grid de cards con imagen ──────────────
+  // Mobile:  1 columna
+  // phablet: 2 columnas
+  // laptop+: 3 columnas (dentro del 2fr)
+  .org-grid-n2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--semantic-space-stack-lg);
+    margin-bottom: var(--semantic-space-stack-xl);
+
+    @include breakpoint(phablet) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @include breakpoint(laptop) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  // ─── N3: lista de noticias secundarias ─────────
+  .org-grid-n3 {
+
+    &__heading {
+      margin-bottom: var(--semantic-space-stack-md);
+      padding-bottom: var(--semantic-space-stack-sm);
+      border-bottom: 2px solid var(--semantic-color-text-primary);
+    }
+
+    &__list {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  } // end @layer syx.organisms
+}
