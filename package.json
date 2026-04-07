@@ -19,7 +19,9 @@
     "validate:tokens": "node scripts/validate-tokens.js",
     "validate:tokens:strict": "node scripts/validate-tokens.js --strict",
     "export:tokens": "node scripts/export-tokens.js",
-    "check": "npm run validate:report && npm run build"
+    "check": "npm run validate:report && npm run build",
+    "critical": "node scripts/inject-critical-css.js",
+    "critical:watch": "node scripts/inject-critical-css.js --watch"
   },
   "keywords": [
     "design-system",
