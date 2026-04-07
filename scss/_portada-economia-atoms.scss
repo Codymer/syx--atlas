@@ -1,0 +1,210 @@
+// SYX — Portada-Economía: Atoms
+// ================================================
+// PARTIAL — portada-specific atom variants.
+//
+// Los átomos del showroom SYX (atom-btn, atom-title…) usan tokens
+// de componente (--component-button-*) que no están definidos para
+// el contexto de portada. Este partial define los mismos selectores
+// con los tokens semánticos de portada y los modificadores que
+// usa portada-economia.html.
+//
+// Coloca este @mixin DESPUÉS de los átomos SYX en el entry point
+// para que los modificadores de portada (--ghost, --icon, --display…)
+// sobreescriban/amplíen sin conflicto (mismo @layer syx.atoms).
+//
+// Mixins exportados:
+//   portada-atoms()  — btn, pill, title, txt, link (portada variants)
+// ================================================
+@use "./abstracts/index" as *;
+
+@mixin portada-atoms($theme: null) {
+  @layer syx.atoms {
+
+    // ── atom-btn ─────────────────────────────────────────────────
+    .atom-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--semantic-space-inset-xs);
+      min-height: 44px;
+      padding: var(--semantic-space-inset-xs) var(--semantic-space-inset-md);
+      font-size: var(--primitive-type-sm);
+      font-weight: 600;
+      border-radius: var(--semantic-border-radius-md);
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+      white-space: nowrap;
+      font-family: inherit;
+      line-height: 1;
+
+      &, &:hover, &:focus, &:visited, &:active { text-decoration: none; }
+
+      &:focus-visible {
+        outline: 2px solid var(--semantic-color-primary);
+        outline-offset: 2px;
+      }
+
+      // --primary — acción principal (máx. uno por pantalla)
+      &--primary {
+        background-color: var(--semantic-color-primary);
+        color: var(--primitive-color-neutral-0);
+        border-color: var(--semantic-color-primary);
+
+        &:hover { background-color: var(--semantic-color-primary-hover); border-color: var(--semantic-color-primary-hover); }
+      }
+
+      // --ghost — sobre fondos oscuros (header, hero dark)
+      &--ghost {
+        background-color: transparent;
+        color: var(--semantic-color-text-inverse);
+        border-color: rgba(255, 255, 255, 0.3);
+
+        &:hover { background-color: rgba(255, 255, 255, 0.1); }
+      }
+
+      // --ghost-dark — sobre fondos claros
+      &--ghost-dark {
+        background-color: transparent;
+        color: var(--semantic-color-text-primary);
+        border-color: var(--semantic-color-border-default);
+
+        &:hover { background-color: var(--semantic-color-bg-tertiary); }
+      }
+
+      // --sm — compact variant
+      &--sm {
+        min-height: 36px;
+        padding: 6px var(--semantic-space-inset-sm);
+        font-size: var(--primitive-type-xs);
+      }
+
+      // --icon — square icon button
+      &--icon {
+        padding: var(--semantic-space-inset-sm);
+        min-width: 44px;
+      }
+    }
+
+    // ── atom-pill ────────────────────────────────────────────────
+    .atom-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px var(--semantic-space-inset-sm);
+      font-size: var(--primitive-type-xs);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-radius: 99px;
+      white-space: nowrap;
+      font-family: inherit;
+      line-height: 1;
+
+      // --neutral (default)
+      &--neutral {
+        background-color: var(--semantic-color-bg-tertiary);
+        color: var(--semantic-color-text-secondary);
+      }
+
+      // --primary — color de marca
+      &--primary {
+        background-color: var(--semantic-color-primary);
+        color: var(--primitive-color-neutral-0);
+      }
+
+      // --inverse — sobre fondos oscuros
+      &--inverse {
+        background-color: rgba(255, 255, 255, 0.15);
+        color: var(--semantic-color-text-inverse);
+      }
+    }
+
+    // ── atom-title ───────────────────────────────────────────────
+    // Tipografía editorial: serif para titular, sans para etiquetas
+    .atom-title {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-weight: 700;
+      color: var(--semantic-color-text-primary);
+      line-height: 1.2;
+
+      // --display — N1 hero (clamp fluido)
+      &--display {
+        font-size: clamp(var(--primitive-type-xl), 4vw, var(--primitive-type-3xl));
+        line-height: 1.08;
+        letter-spacing: -0.03em;
+      }
+
+      // --h1 — titular principal de sección
+      &--h1 {
+        font-size: clamp(var(--primitive-type-lg), 3vw, var(--primitive-type-2xl));
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+      }
+
+      // --h2 — titular N2 card
+      &--h2 {
+        font-size: clamp(var(--primitive-type-md), 2vw, var(--primitive-type-lg));
+        line-height: 1.25;
+        letter-spacing: -0.015em;
+      }
+
+      // --h3 — titular N3 lista
+      &--h3 {
+        font-size: var(--primitive-type-base);
+        font-weight: 700;
+        line-height: 1.4;
+      }
+
+      // --sm — etiqueta de sección (sans)
+      &--sm {
+        font-size: var(--primitive-type-sm);
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        font-family: system-ui, sans-serif;
+      }
+
+      // --xs — label de categoría (sans, muted)
+      &--xs {
+        font-size: var(--primitive-type-xs);
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-family: system-ui, sans-serif;
+        color: var(--semantic-color-text-tertiary);
+      }
+    }
+
+    // ── atom-txt ─────────────────────────────────────────────────
+    .atom-txt {
+      font-size: var(--primitive-type-base);
+      line-height: 1.6;
+      color: var(--semantic-color-text-secondary);
+
+      &--sm    { font-size: var(--primitive-type-sm); line-height: 1.5; }
+      &--lead  { font-size: var(--primitive-type-md); line-height: 1.55; color: var(--semantic-color-text-secondary); }
+      &--muted { color: var(--semantic-color-text-tertiary); }
+    }
+
+    // ── atom-link (portada context) ──────────────────────────────
+    // Complementa el mixin SYX atom-link() con el comportamiento
+    // base que necesita portada (el SYX solo estila --primary).
+    .atom-link {
+      color: var(--semantic-color-text-primary);
+      text-decoration: none;
+
+      &:hover {
+        color: var(--semantic-color-primary);
+        text-decoration: underline;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--semantic-color-primary);
+        outline-offset: 2px;
+        border-radius: 2px;
+      }
+    }
+
+  } // end @layer syx.atoms
+}

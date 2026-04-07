@@ -1,0 +1,77 @@
+// CORE
+// ===============================================
+@use "../abstracts/index" as *;
+// ===============================================
+
+// MOL: mol-ticker
+// ===============================================
+// Tira de datos financieros en tiempo real.
+// Contexto: dentro de org-site-header__ticker (fondo oscuro).
+// Composes: (standalone)
+//
+// No-JS: lista visible y scrollable horizontalmente.
+// JS:    auto-scroll continuo con pausa al focus/hover.
+//
+// Usage:
+//   <div class="mol-ticker" role="list" aria-label="Datos de mercado" aria-live="polite">
+//     <div class="mol-ticker__item" role="listitem">
+//       <span class="mol-ticker__nombre">IBEX</span>
+//       <span class="mol-ticker__valor">10.234</span>
+//       <span class="mol-ticker__cambio mol-ticker__cambio--alza">+0,42%</span>
+//     </div>
+//   </div>
+// ===============================================
+@mixin mol-ticker($theme: null) {
+  @layer syx.molecules {
+
+  .mol-ticker {
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-space-inset-lg);
+    padding: var(--semantic-space-inset-xs) var(--semantic-space-inset-md);
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar { display: none; }
+
+    // &__item
+    &__item {
+      display: flex;
+      align-items: center;
+      gap: var(--semantic-space-inset-xs);
+      flex-shrink: 0;
+      font-size: var(--primitive-type-xs, 0.75rem);
+      white-space: nowrap;
+    }
+
+    // &__nombre
+    &__nombre {
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    // &__valor
+    &__valor {
+      color: var(--semantic-color-text-inverse);
+    }
+
+    // &__cambio
+    &__cambio {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-weight: 600;
+
+      // --alza: verde sobre fondo oscuro (no usa state-success: bajo contraste sobre bg-inverse)
+      &--alza  { color: #4ade80; }
+      // --baja: rojo sobre fondo oscuro
+      &--baja  { color: #f87171; }
+      // --neutro
+      &--neutro { color: rgba(255, 255, 255, 0.5); }
+    }
+  }
+
+  } // end @layer syx.molecules
+}

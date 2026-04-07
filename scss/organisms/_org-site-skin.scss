@@ -1,0 +1,59 @@
+// CORE
+// ===============================================
+@use "../abstracts/index" as *;
+// ===============================================
+
+// ORG: org-site-skin
+// ===============================================
+// Wrapper de publicidad lateral de página ("site skin").
+// Solo visible ≥ 1440px donde existe espacio lateral suficiente.
+//
+// EXCEPCIÓN CP-01 documentada:
+//   atlas-rules/11-gobierno/11.0, Excepción F
+//   position: fixed está permitido aquí porque:
+//   - z-index: -1 (detrás del contenido, nunca lo bloquea)
+//   - aria-hidden="true" (invisible para tecnología asistiva)
+//   - Solo visible cuando el viewport tiene espacio lateral real
+//
+// Usage:
+//   <div class="org-site-skin" aria-hidden="true" role="presentation">
+//     <div class="org-site-skin__wing org-site-skin__wing--left">
+//       <img src="…" alt="" width="220" height="800" loading="lazy">
+//     </div>
+//     <div class="org-site-skin__wing org-site-skin__wing--right">
+//       <img src="…" alt="" width="220" height="800" loading="lazy">
+//     </div>
+//   </div>
+// ===============================================
+@mixin org-site-skin($theme: null) {
+  @layer syx.organisms {
+
+  .org-site-skin {
+    display: none; // oculto hasta el breakpoint wide
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    @include breakpoint(wide) {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    // &__wing — columna lateral (izquierda o derecha)
+    &__wing {
+      width: calc((100vw - var(--semantic-container-skin, 1440px)) / 2);
+      min-width: 0;
+      max-width: 220px;
+      flex-shrink: 0;
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+
+  } // end @layer syx.organisms
+}

@@ -1,0 +1,138 @@
+// CORE
+// ===============================================
+@use "../abstracts/index" as *;
+// ===============================================
+
+// ORG: org-news-header
+// ===============================================
+// Cabecera de sitio de noticias. Fondo oscuro (bg-inverse).
+// Dos zonas:
+//   __ticker  — tira de cotizaciones financieras (mol-ticker)
+//   __inner   — logo + nav principal + acciones + toggle mobile
+//
+// Diferencia con org-site-header (showroom):
+//   - Fondo oscuro vs. claro
+//   - __ticker como primera zona
+//   - __logo en lugar de __brand
+//   - __menu-toggle en lugar de __burger
+//
+// No-JS:
+//   - Ticker: lista scrollable estática.
+//   - Nav: visible como lista, no colapsa.
+//   - menu-toggle: visible pero inactivo.
+//
+// JS (progressive enhancement):
+//   - menu-toggle gestiona aria-expanded + visibilidad de __nav en mobile.
+//
+// Usage:
+//   <header class="org-news-header" role="banner">
+//     <div class="org-news-header__ticker">
+//       <nav class="mol-ticker" role="list" aria-label="Datos de mercado" aria-live="polite">…</nav>
+//     </div>
+//     <div class="org-news-header__inner">
+//       <a class="org-news-header__logo" href="/" aria-label="Ir a portada">
+//         <img src="…" alt="Nombre del medio" height="32" width="auto">
+//       </a>
+//       <nav id="site-nav" class="org-news-header__nav" aria-label="Navegación principal">
+//         <ul>…</ul>
+//       </nav>
+//       <div class="org-news-header__actions">…</div>
+//       <button class="org-news-header__menu-toggle atom-btn atom-btn--icon atom-btn--ghost"
+//               type="button" aria-expanded="false" aria-controls="site-nav"
+//               aria-label="Abrir menú">…</button>
+//     </div>
+//   </header>
+// ===============================================
+@mixin org-news-header($theme: null) {
+  @layer syx.organisms {
+
+  .org-news-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--semantic-color-bg-inverse);
+    color: var(--semantic-color-text-inverse);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+
+    // &__ticker — strip financiero (fondo ligeramente más oscuro)
+    &__ticker {
+      background-color: color-mix(in srgb, var(--semantic-color-bg-inverse) 80%, transparent);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+
+    // &__inner — barra principal: logo + nav + acciones
+    &__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--semantic-space-inset-md);
+      padding: var(--semantic-space-inset-sm) var(--semantic-space-inset-md);
+      max-width: var(--semantic-container-max, 1200px);
+      margin-inline: auto;
+
+      @include breakpoint(phablet) {
+        padding-inline: var(--semantic-space-inset-lg);
+      }
+
+      @include breakpoint(laptop) {
+        padding-inline: var(--semantic-space-inset-xl);
+      }
+    }
+
+    // &__logo
+    &__logo img {
+      height: 32px;
+      width: auto;
+    }
+
+    // &__nav — No-JS: visible como bloque. JS: colapsable en mobile.
+    &__nav {
+      display: block;
+
+      ul {
+        display: flex;
+        gap: var(--semantic-space-inset-lg);
+      }
+
+      a {
+        font-size: var(--primitive-type-sm, 0.875rem);
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.8);
+        padding: var(--semantic-space-inset-xs) 0;
+        border-bottom: 2px solid transparent;
+        @include transition(color 150ms ease, border-color 150ms ease);
+
+        &:hover,
+        &[aria-current="page"] {
+          color: var(--semantic-color-text-inverse);
+          border-bottom-color: var(--semantic-color-primary);
+        }
+
+        &:focus-visible {
+          outline: 2px solid white;
+          outline-offset: 2px;
+          border-radius: 2px;
+        }
+      }
+    }
+
+    // &__actions — CTAs de suscripción / perfil
+    &__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--semantic-space-inset-sm);
+    }
+
+    // &__menu-toggle — visible < laptop, oculto en desktop
+    &__menu-toggle {
+      display: flex;
+
+      @include breakpoint(laptop) {
+        display: none;
+      }
+    }
+  }
+
+  } // end @layer syx.organisms
+}

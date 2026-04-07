@@ -183,7 +183,39 @@ An `outline-width: 2px` on a dark background looks thinner than on a light backg
 
 ---
 
-### 8. Density
+### 8. Progressive enhancement in CSS
+
+Write styles in layers of increasing complexity. Each layer must be independently valid — a component cannot break if a later layer doesn't apply.
+
+```
+Layer 1 — Base (no breakpoints, no feature queries)
+  Typography, color, spacing. Works at any viewport and any device.
+  The component is usable here, even if not visually optimised.
+
+Layer 2 — Layout (min-width breakpoints only)
+  Flexbox/grid layout changes. Always min-width, never max-width.
+  @include breakpoint(sm) { … }
+
+Layer 3 — Enhancement (@supports)
+  Advanced CSS that not all browsers support equally:
+  backdrop-filter, container queries, :has(), complex animations.
+  Wrap in @supports so the base experience is never broken:
+  @supports (backdrop-filter: blur(8px)) { … }
+
+Layer 4 — Motion (prefers- queries)
+  Animation and transitions. Always wrapped:
+  @include reduced-motion { animation: none; transition: none; }
+```
+
+**Rules:**
+- Never write CSS that makes content inaccessible if a media query or `@supports` block doesn't apply.
+- `max-width` media queries are **forbidden** in component files. They indicate a mobile-last approach. Use `min-width` exclusively.
+- Content reordering via CSS `order` is fine. HTML duplication to handle a breakpoint is a structural error — flag it to UX mode.
+- If a component relies on `@supports` for a critical layout property, the base style without `@supports` must still produce a usable component.
+
+---
+
+### 9. Density
 
 Components must support three density contexts without layout breakage. Implement via modifier:
 

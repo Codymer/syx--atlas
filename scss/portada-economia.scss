@@ -1,0 +1,56 @@
+// SYX — Entry point: portada-economia (NON-CRITICAL — below-fold)
+// ================================================
+// Compila a: css/portada-economia.css
+//
+// ESTRATEGIA DE CARGA:
+//   Este bundle contiene los estilos NO críticos (below-fold).
+//   Se carga de forma ASYNC (no render-blocking):
+//     <link rel="preload" href="css/portada-economia.css" as="style">
+//     <link rel="stylesheet" href="css/portada-economia.css"
+//           media="print" onload="this.media='all';this.onload=null">
+//     <noscript><link rel="stylesheet" href="css/portada-economia.css"></noscript>
+//
+// CASCADA DE TOKENS:
+//   ① @use './abstracts/index'         → SYX :root (emitido en el bundle)
+//   ② @use './portada-economia-tokens'  → Portada :root (después → gana)
+//   Al cargarse async DESPUÉS del bundle crítico, este bundle es
+//   el último en la cascada; sus tokens de portada prevalecen.
+//
+// COMPONENTES INCLUIDOS (below-fold):
+//   Atoms:      atom-link, atom-breadcrumb
+//   Molecules:  mol-card-noticia, mol-noticia-secundaria,
+//               mol-datos-mercado, mol-publicidad
+//   Organisms:  org-grid-editorial (incluye org-grid-n2 y org-grid-n3),
+//               org-news-footer
+// ================================================
+
+// ── Módulos SCSS ─────────────────────────────────────────────────
+// ① SYX system tokens + mixins
+@use './abstracts/index'   as *;
+// Mixins de componentes
+@use './atoms/index'       as *;
+@use './molecules/index'   as *;
+@use './organisms/index'   as *;
+// ② Token overrides portada — DESPUÉS de abstracts → gana cascada
+@use 'portada-economia-tokens';
+
+// ── @layer ordering ─────────────────────────────────────────────
+// Mismo orden que el bundle crítico → los layers se fusionan
+// correctamente cuando ambos CSS están activos en la página.
+@layer syx.atoms, syx.molecules, syx.organisms;
+
+// ── Atoms ───────────────────────────────────────────────────────
+@include atom-link();
+@include atom-breadcrumb();
+
+// ── Molecules ───────────────────────────────────────────────────
+@include mol-card-noticia();
+@include mol-noticia-secundaria();
+@include mol-datos-mercado();
+@include mol-publicidad();
+
+// ── Organisms ───────────────────────────────────────────────────
+// org-grid-editorial incluye org-grid-n2 y org-grid-n3
+@include org-grid-editorial();
+// org-news-footer: footer de portada (fondo oscuro, below-fold)
+@include org-news-footer();

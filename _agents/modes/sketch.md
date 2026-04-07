@@ -88,6 +88,7 @@ A SKETCH communicates **structure, hierarchy, and flow** — not aesthetics. If 
   .mol-plan-grid { display: flex; flex-direction: column; gap: 1rem; }
   @media (min-width: 640px) { .mol-plan-grid { flex-direction: row; } }
   ```
+- **DOM order = content priority.** Elements must appear in the HTML in the order a user should read or act on them — not in the visual order for desktop. If the sketch reorders content visually at a breakpoint, use CSS `order` — never duplicate the HTML element. A sketch that requires two copies of the same content to handle layout is already wrong.
 - **Enforce the grayscale palette.** If you find yourself writing a hex that is not in the Visual Fidelity Contract palette above, stop and replace it with the closest allowed value.
 - **Note inline values that would need tokenization** if this sketch were to be handed off to `[SYX: UI]:`. A short comment at the bottom of the file is enough: `<!-- Tokens needed: bg #1a1a2e → --semantic-color-bg-primary, radius 12px → --semantic-border-radius-lg -->`.
 - **Mark the file clearly as a sketch.** Add a visible banner or comment at the top: `<!-- ⚡ SYX SKETCH — not production code -->`.

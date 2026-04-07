@@ -1,0 +1,61 @@
+// CORE
+// ===============================================
+@use "../abstracts/index" as *;
+// ===============================================
+
+// MOL: mol-noticia-secundaria
+// ===============================================
+// Ítem N3 de lista editorial sin imagen. Solo titular y metadatos.
+// El separador inferior desaparece en el último ítem (:last-child).
+//
+// Usage:
+//   <li class="mol-noticia-secundaria">
+//     <div class="mol-noticia-secundaria__meta-top">
+//       <span class="atom-pill atom-pill--neutral">Categoría</span>
+//       <time class="atom-txt atom-txt--sm atom-txt--muted" datetime="…">Hace 1h</time>
+//     </div>
+//     <h3 class="atom-title atom-title--h3">
+//       <a href="…">Titular de la noticia secundaria</a>
+//     </h3>
+//   </li>
+// ===============================================
+@mixin mol-noticia-secundaria($theme: null) {
+  @layer syx.molecules {
+
+  .mol-noticia-secundaria {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-space-stack-sm);
+    padding-block: var(--semantic-space-inset-md);
+    border-bottom: 1px solid var(--semantic-color-border-subtle);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    // &__meta-top — categoría + tiempo
+    &__meta-top {
+      display: flex;
+      align-items: center;
+      gap: var(--semantic-space-inset-sm);
+    }
+
+    // Enlace del titular
+    h3 a {
+      color: var(--semantic-color-text-primary);
+      text-decoration: none;
+
+      &:hover {
+        color: var(--semantic-color-primary);
+        text-decoration: underline;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--semantic-color-primary);
+        outline-offset: 2px;
+      }
+    }
+  }
+
+  } // end @layer syx.molecules
+}

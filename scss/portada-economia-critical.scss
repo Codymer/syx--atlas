@@ -1,0 +1,112 @@
+// SYX — Entry point: portada-economia (CRITICAL — above-fold)
+// ================================================
+// Compila a: css/portada-economia-critical.css
+//
+// ESTRATEGIA DE CARGA:
+//   Este bundle contiene los estilos CRÍTICOS (above-fold).
+//   Se carga de forma SÍNCRONA (render-blocking intencional):
+//     <link rel="stylesheet" href="css/portada-economia-critical.css">
+//
+//   Debe ser pequeño (<12 KB gzip). Contiene exactamente lo
+//   necesario para pintar sin FOUC el área visible al cargar.
+//
+// CASCADA DE TOKENS:
+//   ① @use './abstracts/index'         → SYX :root (pink, purple…)
+//   ② @use './portada-economia-tokens'  → Portada :root (neutral, brand…)
+//   Los módulos se emiten en orden de carga → ② gana la cascada.
+//   Sin inline styles en el HTML.
+//
+// COMPONENTES INCLUIDOS (above-fold):
+//   Reset:      syx.reset layer
+//   A11y:       .syx-sr-only (unlayered — siempre visible)
+//   Organisms:  org-site-skin, org-news-header, org-hero-principal
+//   Molecules:  mol-ticker
+//   Atoms:      portada-atoms (btn, pill, title, txt, link)
+// ================================================
+
+// ── Módulos SCSS ─────────────────────────────────────────────────
+// ① SYX system tokens output + mixins (primero → sobrescrito por ②)
+@use './abstracts/index'            as *;
+// Mixins de componentes (no emiten CSS hasta @include)
+@use './atoms/index'                as *;
+@use './molecules/index'            as *;
+@use './organisms/index'            as *;
+// Átomos portada (mixin — no emite hasta @include)
+@use 'portada-economia-atoms'       as *;
+// ② Token overrides portada — cargado DESPUÉS de abstracts → gana cascada
+@use 'portada-economia-tokens';
+
+// ── Layer order ──────────────────────────────────────────────────
+// Declara el orden antes de que los componentes emitan sus @layer.
+// Idéntico al bundle no-crítico → ambos bundles comparten jerarquía.
+@layer syx.reset, syx.atoms, syx.molecules, syx.organisms;
+
+// ── Reset ────────────────────────────────────────────────────────
+@layer syx.reset {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 100%; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: var(--primitive-type-base);
+    line-height: 1.6;
+    color: var(--semantic-color-text-primary);
+    background-color: var(--semantic-color-bg-primary);
+  }
+  img, svg { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  ul, ol { list-style: none; }
+  address { font-style: normal; }
+  button { font: inherit; cursor: pointer; }
+}
+
+// ── Accessibility ────────────────────────────────────────────────
+// Sin layer: aplica universalmente sobre cualquier componente
+.syx-sr-only {
+  position: absolute;
+  width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.syx-sr-only--focusable:focus {
+  position: static; width: auto; height: auto;
+  overflow: visible; clip: auto; white-space: normal;
+}
+
+// ── Atoms (above-fold) ───────────────────────────────────────────
+@include portada-atoms();
+
+// ── Organisms (above-fold) ───────────────────────────────────────
+// org-site-skin: publicidad NP (fondo de página)
+// Excepción F ref. atlas-rules/11-gobierno/11.0-arbitraje-principios.md
+@include org-site-skin();
+
+// page-wrapper: contenedor centrado de contenido
+@layer syx.organisms {
+  .page-wrapper {
+    max-width: var(--semantic-container-max);
+    margin-inline: auto;
+    padding-inline: var(--semantic-space-inset-md);
+    background-color: var(--semantic-color-bg-secondary);
+
+    @include breakpoint(phablet) { padding-inline: var(--semantic-space-inset-lg); }
+    @include breakpoint(laptop)  { padding-inline: var(--semantic-space-inset-xl); }
+  }
+}
+
+// org-news-header: cabecera sticky fondo oscuro + ticker
+@include org-news-header();
+
+// org-hero-principal: LCP area (N1)
+@include org-hero-principal();
+
+// ── Molecules (above-fold) ───────────────────────────────────────
+// mol-ticker: tira de cotizaciones en el header
+@include mol-ticker();
+
+// ── Reduced motion (sin layer — aplica a todo) ───────────────────
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

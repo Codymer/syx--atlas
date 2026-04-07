@@ -1,0 +1,96 @@
+// CORE
+// ===============================================
+@use "../abstracts/index" as *;
+// ===============================================
+
+// ORG: org-hero-principal
+// ===============================================
+// Bloque N1 editorial: una noticia con imagen full-width, titular display,
+// entradilla lead, metadatos y CTA de lectura.
+//
+// La imagen es LCP — usar loading="eager" fetchpriority="high".
+// El contenido de texto tiene max-width 80ch para legibilidad óptima.
+//
+// Modificadores:
+//   --breaking  — Titular urgente: borde izquierdo con color de acción
+//
+// Usage:
+//   <section class="org-hero-principal" aria-labelledby="n1-titulo">
+//     <div class="org-hero-principal__imagen">
+//       <img src="…" alt="…" loading="eager" fetchpriority="high" width="1200" height="675">
+//     </div>
+//     <div class="org-hero-principal__content">
+//       <div class="org-hero-principal__meta-top">…</div>
+//       <h1 id="n1-titulo" class="atom-title atom-title--display">…</h1>
+//       <p class="atom-txt atom-txt--lead">…</p>
+//       <div class="org-hero-principal__meta-bottom">…</div>
+//     </div>
+//   </section>
+// ===============================================
+@mixin org-hero-principal($theme: null) {
+  @layer syx.organisms {
+
+  .org-hero-principal {
+    padding-block: var(--semantic-space-stack-xl);
+    border-bottom: 1px solid var(--semantic-color-border-subtle);
+
+    // &__imagen — wrapper con aspect-ratio 16:9
+    &__imagen {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: var(--semantic-border-radius-lg);
+      background-color: var(--semantic-color-bg-tertiary);
+      margin-bottom: var(--semantic-space-stack-lg);
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    // &__content — zona de texto
+    &__content {
+      max-width: 80ch;
+    }
+
+    // &__meta-top — sección + tiempo antes del titular
+    &__meta-top {
+      display: flex;
+      align-items: center;
+      gap: var(--semantic-space-inset-sm);
+      margin-bottom: var(--semantic-space-stack-md);
+    }
+
+    // El titular h1 va directamente dentro de __content
+    &__content h1 {
+      margin-bottom: var(--semantic-space-stack-md);
+    }
+
+    // La entradilla lead va directamente dentro de __content
+    &__content .atom-txt--lead {
+      margin-bottom: var(--semantic-space-stack-lg);
+    }
+
+    // &__meta-bottom — autor + tiempo + CTA a la derecha
+    &__meta-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--semantic-space-inset-md);
+
+      .atom-btn {
+        margin-left: auto;
+      }
+    }
+
+    // --breaking: variante urgente
+    &--breaking {
+      padding-left: var(--semantic-space-inset-md);
+      border-left: 4px solid var(--semantic-color-primary);
+    }
+  }
+
+  } // end @layer syx.organisms
+}

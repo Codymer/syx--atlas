@@ -1,0 +1,86 @@
+// CORE
+// ===============================================
+@use "../abstracts/index" as *;
+// ===============================================
+
+// ORG: org-news-footer
+// ===============================================
+// Footer de sitio de noticias. Fondo oscuro (bg-inverse).
+// Dos zonas: nav de secciones + copyright.
+// Mobile: columna única · phablet+: fila flex.
+//
+// Diferencia con org-home-footer (showroom):
+//   - Fondo oscuro vs. claro
+//   - Sin logo ni redes sociales
+//   - Nav de secciones + texto legal
+//
+// Usage:
+//   <footer class="org-news-footer" role="contentinfo">
+//     <div class="org-news-footer__inner">
+//       <nav class="org-news-footer__nav" aria-label="Secciones del sitio">
+//         <ul role="list">
+//           <li><a href="/economia">Economía</a></li>
+//         </ul>
+//       </nav>
+//       <p class="org-news-footer__copy">© 2026 Meridian.</p>
+//     </div>
+//   </footer>
+// ===============================================
+@mixin org-news-footer($theme: null) {
+  @layer syx.organisms {
+
+  .org-news-footer {
+    background-color: var(--semantic-color-bg-inverse);
+    color: rgba(255, 255, 255, 0.7);
+    padding-block: var(--semantic-space-stack-2xl);
+    margin-top: var(--semantic-space-stack-2xl);
+
+    // &__inner — contenedor centrado, fila en phablet+
+    &__inner {
+      max-width: var(--semantic-container-max, 1200px);
+      margin-inline: auto;
+      padding-inline: var(--semantic-space-inset-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--semantic-space-stack-lg);
+
+      @include breakpoint(phablet) {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding-inline: var(--semantic-space-inset-lg);
+      }
+    }
+
+    // &__nav — lista de secciones
+    &__nav ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--semantic-space-inset-md);
+    }
+
+    &__nav a {
+      font-size: var(--primitive-type-xs, 0.75rem);
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+
+      &:hover {
+        color: #fff;
+        text-decoration: underline;
+      }
+
+      &:focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 2px;
+      }
+    }
+
+    // &__copy — texto legal / copyright
+    &__copy {
+      font-size: var(--primitive-type-xs, 0.75rem);
+      color: rgba(255, 255, 255, 0.4);
+    }
+  }
+
+  } // end @layer syx.organisms
+}
